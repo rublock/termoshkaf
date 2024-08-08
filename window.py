@@ -2,10 +2,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPu
     QLabel
 
 
-def click_handler():
-    print("Button clicked!")
-
-
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,7 +13,7 @@ class Window(QMainWindow):
         self.label = QLabel("Тестировать устройство")
         self.button = QPushButton("Пуск")
 
-        self.button.clicked.connect(click_handler)
+        self.button.clicked.connect(self.click_handler)
 
         parent_layout.addWidget(self.label)
         parent_layout.addWidget(self.button)
@@ -25,6 +21,9 @@ class Window(QMainWindow):
         center_widget = QWidget()
         center_widget.setLayout(parent_layout)
         self.setCentralWidget(center_widget)
+
+    def click_handler(self):
+        self.label.setText("Кнопка была нажата!")
 
 
 app = QApplication([])
