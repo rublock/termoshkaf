@@ -81,5 +81,5 @@ REGISTER_MAP: typing.Final[dict] = {
 
 ATTEMPTS_TO_MODBUS_CONNECTIONS: typing.Final[int] = 3  # Количество попыток подключения по Modbus протоколу (рекомендовано 3)
 WRITE_MODBUS_TIMEOUT: typing.Final[float] = 0.2  # Таймаут между запись значений (рекомендовано 0.2)
-LOG_FILE_NAME_WRITE: typing.Final[str] = "write_registers_log.json"  # Название файла для логов записи
-LOG_FILE_NAME_READ: typing.Final[str] = "read_registers_log.json"  # Навзвание фала для логов чтения
+LOG_FILE_NAME_WRITE: typing.Final[str] = "../write_registers_log.json"  # Название файла для логов записи
+LOG_FILE_NAME_READ: typing.Final[str] = "../read_registers_log.json"  # Навзвание фала для логов чтения

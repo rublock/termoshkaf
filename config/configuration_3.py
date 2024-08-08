@@ -8,8 +8,8 @@ THERMOSTAT_ADDR: typing.Final[int] = 100  # Modbus адрес термостат
 ####################---------Установки для поддержания климата---------####################
 
 DATA_MAP: typing.Final[dict] = {
-    "TEMP_MAX_LEVEL": 500,  # Максимальная температура (умножено на 10) Диапазон: -400...600 ºС, По умолчанию 400
-    "TEMP_MIN_LEVEL": 400,  # Минимальная температура (умножено на 10) Диапазон: -400...600 ºС, По умолчанию 100
+    "TEMP_MAX_LEVEL": 50,  # Максимальная температура (умножено на 10) Диапазон: -400...600 ºС, По умолчанию 400
+    "TEMP_MIN_LEVEL": -390,  # Минимальная температура (умножено на 10) Диапазон: -400...600 ºС, По умолчанию 100
     "HUMID_MAX_LEVEL": 890,  # Максимальная относительная влажность (умножено на 10) Диапазон 100...900 %, По умолчанию 800
     "HUMID_HYST": 100,  # Гистерезис (умножено на 10) влажности при осушении, 10...800%, По умолчанию 300
     "HUMID_ALARM_LEVEL": 990,  # Порог аварийной влажности (умножено на 10) 60...990 %, По умолчанию 900
@@ -81,5 +81,5 @@ REGISTER_MAP: typing.Final[dict] = {
 
 ATTEMPTS_TO_MODBUS_CONNECTIONS: typing.Final[int] = 3  # Количество попыток подключения по Modbus протоколу (рекомендовано 3)
 WRITE_MODBUS_TIMEOUT: typing.Final[float] = 0.2  # Таймаут между запись значений (рекомендовано 0.2)
-LOG_FILE_NAME_WRITE: typing.Final[str] = "write_registers_log.json"  # Название файла для логов записи
-LOG_FILE_NAME_READ: typing.Final[str] = "read_registers_log.json"  # Навзвание фала для логов чтения
+LOG_FILE_NAME_WRITE: typing.Final[str] = "../write_registers_log.json"  # Название файла для логов записи
+LOG_FILE_NAME_READ: typing.Final[str] = "../read_registers_log.json"  # Навзвание фала для логов чтения

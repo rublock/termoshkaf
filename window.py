@@ -1,12 +1,14 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QCheckBox, QButtonGroup, \
-    QLabel
+import subprocess
+import sys
+
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel
 
 
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setMinimumSize(400, 150)
+        self.setMinimumSize(600, 600)
 
         parent_layout = QVBoxLayout()
 
@@ -23,7 +25,20 @@ class Window(QMainWindow):
         self.setCentralWidget(center_widget)
 
     def click_handler(self):
-        self.label.setText("Кнопка была нажата!")
+
+        file_to_run = 'read_registers.py'
+
+        try:
+            result = subprocess.run([sys.executable, file_to_run], capture_output=True, text=True, check=True)
+
+            output = result.stdout
+            self.label.setText(output)
+
+        except subprocess.CalledProcessError as e:
+            print(f"Ошибка при выполнении файла: {e}")
+            print(e.stderr)
+        except FileNotFoundError:
+            print("Файл не найден. Проверьте путь.")
 
 
 app = QApplication([])

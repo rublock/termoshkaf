@@ -3,7 +3,7 @@ from typing import List
 import minimalmodbus
 import time
 import json
-import configuration as config
+from config import configuration as config
 
 
 def my_modbus_worker(func, args):
@@ -158,7 +158,7 @@ def main():
                                            args={
                                                "registeraddress": int(
                                                    config.REGISTER_MAP.get(registers_type).get(register_name), 16),
-                                               "number_of_registers": 1,
+                                                "number_of_registers": 1,
                                                "functioncode": FUNCTION_CODE.get(registers_type)
                                            }):
                 print(f"Value of {register_name}: {convert_to_signed(ret_val[0])}")
