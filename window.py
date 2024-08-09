@@ -1,6 +1,7 @@
 import subprocess
 import sys
 
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel
 
 
@@ -23,6 +24,10 @@ class Window(QMainWindow):
         center_widget = QWidget()
         center_widget.setLayout(parent_layout)
         self.setCentralWidget(center_widget)
+
+        font = QFont()
+        font.setPointSize(20)
+        self.label.setFont(font)
 
     def click_handler(self):
 
