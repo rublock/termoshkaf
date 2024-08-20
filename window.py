@@ -1,7 +1,17 @@
 import subprocess
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, \
-    QGridLayout, QTableWidgetItem, QPushButton, QHBoxLayout, QVBoxLayout
+
+from PyQt6.QtWidgets import (
+    QApplication,
+    QGridLayout,
+    QHBoxLayout,
+    QMainWindow,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class MainWindow(QMainWindow):
@@ -25,7 +35,7 @@ class MainWindow(QMainWindow):
 
         read_button = QPushButton("Чтение")
         test_button = QPushButton("Тест")
-        read_button.clicked.connect(self.click_handler)
+        read_button.clicked.connect(self.read_registers_func)
 
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
@@ -45,18 +55,22 @@ class MainWindow(QMainWindow):
 
         grid_layout.addWidget(self.table, 0, 0)
 
-    def click_handler(self):
-        file_to_run = 'read_registers.py'
+    # TODO написать отдельный модуль для считывания данных из stdout,
+    # передать в него название файла и начало строки для вывода
+    def read_registers_func(self):
+        file_to_run = "read_registers.py"
 
         try:
-            result = subprocess.run([sys.executable, file_to_run], capture_output=True, text=True, check=True)
+            result = subprocess.run(
+                [sys.executable, file_to_run], capture_output=True, text=True, check=True
+            )
 
             output = result.stdout
-            result_output = ''
+            result_output = ""
 
             for line in output.splitlines():
                 if line.startswith("HT3:") or line.startswith("HTR:"):
-                    result_output += f'{line} + \n'
+                    result_output += f"{line} + \n"
 
             self.table.setItem(0, 1, QTableWidgetItem(result_output.strip()))
 

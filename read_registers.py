@@ -1,8 +1,10 @@
+import json
+import time
 import typing
 from typing import List
+
 import minimalmodbus
-import time
-import json
+
 from config import configuration_1 as config
 
 
@@ -20,53 +22,68 @@ def my_modbus_worker(func, args):
 
 
 def get_t1(Thermostat) -> List[int]:
-    return my_modbus_worker(func=Thermostat.read_registers,
-                            args={
-                                "registeraddress": int(
-                                    config.REGISTER_MAP.get("INPUT_REGISTERS").get("T_DS1_VALUE"), 16),
-                                "number_of_registers": 1,
-                                "functioncode": 4
-                            })
+    return my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("T_DS1_VALUE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
 
 
 def get_t2(Thermostat) -> List[int]:
-    return my_modbus_worker(func=Thermostat.read_registers,
-                            args={
-                                "registeraddress": int(
-                                    config.REGISTER_MAP.get("INPUT_REGISTERS").get("T_DS2_VALUE"), 16),
-                                "number_of_registers": 1,
-                                "functioncode": 4
-                            })
+    return my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("T_DS2_VALUE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
 
 
 def get_ht3_humid(Thermostat) -> List[int]:
-    return my_modbus_worker(func=Thermostat.read_registers,
-                            args={
-                                "registeraddress": int(
-                                    config.REGISTER_MAP.get("INPUT_REGISTERS").get("TH_HUMID_VALUE"), 16),
-                                "number_of_registers": 1,
-                                "functioncode": 4
-                            })
+    return my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("TH_HUMID_VALUE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
 
 
 def get_ht3_temp(Thermostat) -> List[int]:
-    return my_modbus_worker(func=Thermostat.read_registers,
-                            args={
-                                "registeraddress": int(
-                                    config.REGISTER_MAP.get("INPUT_REGISTERS").get("TH_TEMP_VALUE"), 16),
-                                "number_of_registers": 1,
-                                "functioncode": 4
-                            })
+    return my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("TH_TEMP_VALUE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
 
 
 def get_htr(Thermostat) -> str:
-    htr_condition = my_modbus_worker(func=Thermostat.read_registers,
-                                     args={
-                                         "registeraddress": int(
-                                             config.REGISTER_MAP.get("INPUT_REGISTERS").get("HEAT_STATE"), 16),
-                                         "number_of_registers": 1,
-                                         "functioncode": 4
-                                     })
+    htr_condition = my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("HEAT_STATE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
     if htr_condition[0]:
         return "ON"
     else:
@@ -74,13 +91,16 @@ def get_htr(Thermostat) -> str:
 
 
 def get_fan(Thermostat) -> str:
-    fan_condition = my_modbus_worker(func=Thermostat.read_registers,
-                                     args={
-                                         "registeraddress": int(
-                                             config.REGISTER_MAP.get("INPUT_REGISTERS").get("FAN_STATE"), 16),
-                                         "number_of_registers": 1,
-                                         "functioncode": 4
-                                     })
+    fan_condition = my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("FAN_STATE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
     if fan_condition[0]:
         return "ON"
     else:
@@ -88,13 +108,16 @@ def get_fan(Thermostat) -> str:
 
 
 def get_ae(Thermostat) -> str:
-    ae_condition = my_modbus_worker(func=Thermostat.read_registers,
-                                    args={
-                                        "registeraddress": int(
-                                            config.REGISTER_MAP.get("INPUT_REGISTERS").get("ACTIVE_STATE"), 16),
-                                        "number_of_registers": 1,
-                                        "functioncode": 4
-                                    })
+    ae_condition = my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("ACTIVE_STATE"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    )
     if ae_condition[0]:
         return "ON"
     else:
@@ -102,13 +125,16 @@ def get_ae(Thermostat) -> str:
 
 
 def get_sw_version(Thermostat) -> str:
-    if version := my_modbus_worker(func=Thermostat.read_registers,
-                                   args={
-                                       "registeraddress": int(
-                                           config.REGISTER_MAP.get("INPUT_REGISTERS").get("VERSION_SW"), 16),
-                                       "number_of_registers": 1,
-                                       "functioncode": 4
-                                   }):
+    if version := my_modbus_worker(
+        func=Thermostat.read_registers,
+        args={
+            "registeraddress": int(
+                config.REGISTER_MAP.get("INPUT_REGISTERS").get("VERSION_SW"), 16
+            ),
+            "number_of_registers": 1,
+            "functioncode": 4,
+        },
+    ):
         return f"{version[0] // 256}.{version[0] % 256}"
 
 
@@ -129,7 +155,9 @@ def main():
     """
 
     # Инициализируем подключение
-    Thermostat: minimalmodbus.Instrument = minimalmodbus.Instrument(port=config.THERMOSTAT_PORT, slaveaddress=config.THERMOSTAT_ADDR)
+    Thermostat: minimalmodbus.Instrument = minimalmodbus.Instrument(
+        port=config.THERMOSTAT_PORT, slaveaddress=config.THERMOSTAT_ADDR
+    )
     Thermostat.serial.baudrate = 115200
     Thermostat.serial.bytesize = 8
     Thermostat.serial.parity = minimalmodbus.serial.PARITY_NONE
@@ -154,13 +182,16 @@ def main():
     print("***Registers data***\n")
     for registers_type in config.REGISTER_MAP.keys():
         for register_name in config.REGISTER_MAP.get(registers_type).keys():
-            if ret_val := my_modbus_worker(func=Thermostat.read_registers,
-                                           args={
-                                               "registeraddress": int(
-                                                   config.REGISTER_MAP.get(registers_type).get(register_name), 16),
-                                                "number_of_registers": 1,
-                                               "functioncode": FUNCTION_CODE.get(registers_type)
-                                           }):
+            if ret_val := my_modbus_worker(
+                func=Thermostat.read_registers,
+                args={
+                    "registeraddress": int(
+                        config.REGISTER_MAP.get(registers_type).get(register_name), 16
+                    ),
+                    "number_of_registers": 1,
+                    "functioncode": FUNCTION_CODE.get(registers_type),
+                },
+            ):
                 print(f"Value of {register_name}: {convert_to_signed(ret_val[0])}")
                 log.setdefault(register_name, convert_to_signed(ret_val[0]))
             else:

@@ -1,6 +1,8 @@
-import minimalmodbus
-import time
 import json
+import time
+
+import minimalmodbus
+
 from config import configuration as config
 
 
@@ -18,11 +20,13 @@ def my_modbus_worker(func, args):
 
     return False
 
+
 def convert_to_unsigned(value):
     """Преобразует int в u_int."""
     if value < 0:
         value = (1 << 16) + value
     return value
+
 
 def main():
     """
@@ -34,8 +38,9 @@ def main():
     """
 
     # Инициализируем подключение
-    Thermostat: minimalmodbus.Instrument = minimalmodbus.Instrument(port=config.THERMOSTAT_PORT,
-                                                                    slaveaddress=config.THERMOSTAT_ADDR)
+    Thermostat: minimalmodbus.Instrument = minimalmodbus.Instrument(
+        port=config.THERMOSTAT_PORT, slaveaddress=config.THERMOSTAT_ADDR
+    )
     Thermostat.serial.baudrate = 115200
     Thermostat.serial.bytesize = 8
     Thermostat.serial.parity = minimalmodbus.serial.PARITY_NONE
@@ -44,22 +49,23 @@ def main():
 
     log: dict = dict()
 
-    my_modbus_worker(func=Thermostat.write_register,
-                     args={
-                         "registeraddress": 13,
-                         "value": 1,
-                         "functioncode": 16
-                     })
+    my_modbus_worker(
+        func=Thermostat.write_register,
+        args={"registeraddress": 13, "value": 1, "functioncode": 16},
+    )
 
     for register_name in config.DATA_MAP.keys():
         if register_name in config.REGISTER_MAP.get("HOLDING_REGISTERS").keys():
-            if ret_val := my_modbus_worker(func=Thermostat.write_register,
-                                           args={
-                                               "registeraddress": int(
-                                                   config.REGISTER_MAP.get("HOLDING_REGISTERS").get(register_name), 16),
-                                               "value": convert_to_unsigned(config.DATA_MAP.get(register_name)),
-                                               "functioncode": 6
-                                           }):
+            if ret_val := my_modbus_worker(
+                func=Thermostat.write_register,
+                args={
+                    "registeraddress": int(
+                        config.REGISTER_MAP.get("HOLDING_REGISTERS").get(register_name), 16
+                    ),
+                    "value": convert_to_unsigned(config.DATA_MAP.get(register_name)),
+                    "functioncode": 6,
+                },
+            ):
                 print(f"Successful writing {register_name}")
                 log.setdefault(register_name, True)
             else:
