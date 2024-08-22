@@ -1,5 +1,6 @@
 import sys
 
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
     QApplication,
     QGridLayout,
@@ -56,9 +57,9 @@ class MainWindow(QMainWindow):
 
         grid_layout.addWidget(self.table, 0, 0)
 
-        # self.timer = QTimer()
-        # self.timer.timeout.connect(lambda: read_registers_func(self.table))
-        # self.timer.start(1000)
+        self.timer = QTimer()
+        self.timer.timeout.connect(lambda: read_registers_func(self.table))
+        self.timer.start(1000)
 
     # TODO сделать один конфигурационный файл и подменять в нем значения в зависимости от вида теста
     # TODO забирать значения не из stdout а сразу переменные из функции

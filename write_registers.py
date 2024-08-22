@@ -1,7 +1,8 @@
 import minimalmodbus
 import time
 import json
-from config import configuration_1 as config
+
+from config import configuration as config
 
 
 def my_modbus_worker(func, args):
