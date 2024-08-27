@@ -10,6 +10,7 @@ def write_registers_func(table):
             [sys.executable, 'write_registers.py'], capture_output=True, text=True, check=True
         )
         item = QTableWidgetItem(result.stdout)
+        # куда отправляются данные
         table.setItem(0, 3, item)
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
