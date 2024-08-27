@@ -1,25 +1,14 @@
-import subprocess
-import sys
+from config import configuration as config
+from config import configuration_1 as config_1
+from config import configuration_2 as config_2
+from config import configuration_3 as config_3
+from config import configuration_4 as config_4
+from config import configuration_5 as config_5
+from config import configuration_6 as config_6
+from config import configuration_7 as config_7
 
-from PyQt6.QtWidgets import QTableWidgetItem
+import write_registers
 
-
-def write_registers_func(table):
-    try:
-        result = subprocess.run(
-            [sys.executable, 'write_registers.py'], capture_output=True, text=True, check=True
-        )
-        item = QTableWidgetItem(result.stdout)
-        # куда отправляются данные
-        table.setItem(0, 3, item)
-        table.resizeColumnsToContents()
-        table.resizeRowsToContents()
-
-    except subprocess.CalledProcessError as e:
-        print(f"Ошибка при выполнении файла: {e}")
-        print(e.stderr)
-        table.setItem(0, 3, QTableWidgetItem("Ошибка выполнения."))
-
-    except FileNotFoundError:
-        print("Файл не найден. Проверьте путь.")
-        table.setItem(0, 3, QTableWidgetItem("Файл не найден."))
+# TODO написать логику чтобы при нажатии нужной записывался конфиг
+# TODO продумать как изменять данные в конфиге пользователем!!!
+write_registers.main(config)

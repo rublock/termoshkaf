@@ -14,7 +14,7 @@ def read_registers_func(table):
         result_text = result.stdout[start_index:end_index].strip()
 
         item = QTableWidgetItem(result_text)
-        table.setItem(0, 2, item)
+        table.setItem(0, 1, item)
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
 
@@ -22,8 +22,8 @@ def read_registers_func(table):
     except subprocess.CalledProcessError as e:
         print(f"Ошибка при выполнении файла: {e}")
         print(e.stderr)
-        table.setItem(0, 2, QTableWidgetItem("Ошибка выполнения."))
+        table.setItem(0, 1, QTableWidgetItem("Ошибка выполнения."))
 
     except FileNotFoundError:
         print("Файл не найден. Проверьте путь.")
-        table.setItem(0, 2, QTableWidgetItem("Файл не найден."))
+        table.setItem(0, 1, QTableWidgetItem("Файл не найден."))

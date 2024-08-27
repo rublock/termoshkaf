@@ -2,10 +2,9 @@ import minimalmodbus
 import time
 import json
 
-from config import configuration as config
 
 
-def my_modbus_worker(func, args):
+def my_modbus_worker(func, args, config):
     attempts_counter: int = 0
 
     while attempts_counter <= config.ATTEMPTS_TO_MODBUS_CONNECTIONS:
@@ -25,7 +24,7 @@ def convert_to_unsigned(value):
         value = (1 << 16) + value
     return value
 
-def main():
+def main(config):
     """
     Пишем регистры термостата по адресу: THERMOSTAT_ADDR, используя COM порт: THERMOSTAT_PORT
     Все регистры доступные для записи заданы в REGISTER_MAP
@@ -50,7 +49,8 @@ def main():
                          "registeraddress": 13,
                          "value": 1,
                          "functioncode": 16
-                     })
+                     },
+                     config=config)
 
     for register_name in config.DATA_MAP.keys():
         if register_name in config.REGISTER_MAP.get("HOLDING_REGISTERS").keys():
@@ -72,5 +72,4 @@ def main():
     with open(config.LOG_FILE_NAME_WRITE, "w") as json_file:
         json.dump(log, json_file, indent=4)
 
-
-main()
+# TODO протестировать на железе!!!

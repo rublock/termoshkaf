@@ -10,11 +10,11 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QHBoxLayout,
+    QLineEdit,
 )
 
 from read import read_registers_func
-from tests import write_registers_func
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -28,7 +28,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         central_widget.setLayout(grid_layout)
 
-
         self.table = QTableWidget(self)
         self.table.setColumnCount(4)
         self.table.setRowCount(1)
@@ -36,9 +35,9 @@ class MainWindow(QMainWindow):
 
         self.table.setHorizontalHeaderLabels(["", "Значения", "Установки", "Заметки"])
 
-        self.table.setItem(0, 1, QTableWidgetItem())
-        self.table.setItem(0, 2, QTableWidgetItem("Text in column 3"))
-        self.table.setItem(0, 3, QTableWidgetItem("Text in column 4"))
+        self.table.setItem(0, 1, QTableWidgetItem(' ' * 50))
+        self.table.setItem(0, 2, QTableWidgetItem(' ' * 50))
+        self.table.setItem(0, 3, QTableWidgetItem())
 
         # подготовка кнопок
         button_widget = QWidget()
@@ -53,9 +52,24 @@ class MainWindow(QMainWindow):
 
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
-        test_heat.clicked.connect(lambda: write_registers_func(self.table))
+        # TODO назначить функцию для кнопки
+        test_heat.clicked.connect()
 
-        # подгоняем ячейку под размер контента
+        # поле ввода и кнопка отправки в третьей колонке
+        input_widget = QWidget()
+        input_layout = QHBoxLayout(input_widget)
+        input_widget.setLayout(input_layout)
+
+        input_field = QLineEdit()
+        input_layout.addWidget(input_field)
+
+        send_button = QPushButton("Отправить")
+        input_layout.addWidget(send_button)
+
+        self.table.setCellWidget(0, 3, input_widget)
+        send_button.clicked.connect(lambda: self.handle_input(input_field))
+
+        # Подгоняем ячейку под размер контента
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
@@ -63,6 +77,10 @@ class MainWindow(QMainWindow):
         # self.timer = QTimer()
         # self.timer.timeout.connect(lambda: read_registers_func(self.table))
         # self.timer.start(1000)
+
+    def handle_input(self, input_field):
+        input_text = input_field.text()
+        print(f"Введенные данные: {input_text}")
 
     # TODO сделать один конфигурационный файл и подменять в нем значения в зависимости от вида теста
     # TODO забирать значения не из stdout, а сразу переменные из функции
