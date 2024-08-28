@@ -14,7 +14,16 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 
-from read import read_registers_func
+from get_data_from_read_registers import read_registers_func
+import write_registers
+
+from config import configuration_1 as config_1
+from config import configuration_2 as config_2
+from config import configuration_3 as config_3
+from config import configuration_4 as config_4
+from config import configuration_5 as config_5
+from config import configuration_6 as config_6
+from config import configuration_7 as config_7
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -33,10 +42,15 @@ class MainWindow(QMainWindow):
         self.table.setRowCount(1)
         grid_layout.addWidget(self.table, 0, 0)
 
-        self.table.setHorizontalHeaderLabels(["", "Значения", "Установки", "Заметки"])
+        self.table.setHorizontalHeaderLabels([
+            "",
+            "Cчитанные значения",
+            "Записанные установки",
+            "Значения для записи"
+        ])
 
-        self.table.setItem(0, 1, QTableWidgetItem(' ' * 50))
-        self.table.setItem(0, 2, QTableWidgetItem(' ' * 50))
+        self.table.setItem(0, 1, QTableWidgetItem())
+        self.table.setItem(0, 2, QTableWidgetItem())
         self.table.setItem(0, 3, QTableWidgetItem())
 
         # подготовка кнопок
@@ -50,10 +64,14 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(read_button)
         read_button.clicked.connect(lambda: read_registers_func(self.table))
 
+        # TODO продумать как изменять данные в конфиге пользователем!!!
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
-        # TODO назначить функцию для кнопки
-        test_heat.clicked.connect()
+        test_heat.clicked.connect(lambda: write_registers.main(config_1))
+
+        test_fan = QPushButton("Тест вентиляции")
+        button_layout.addWidget(test_fan)
+        test_fan.clicked.connect(lambda:  write_registers.main(config_2))
 
         # поле ввода и кнопка отправки в третьей колонке
         input_widget = QWidget()

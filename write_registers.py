@@ -60,7 +60,8 @@ def main(config):
                                                    config.REGISTER_MAP.get("HOLDING_REGISTERS").get(register_name), 16),
                                                "value": convert_to_unsigned(config.DATA_MAP.get(register_name)),
                                                "functioncode": 6
-                                           }):
+                                           },
+                                           config=config):
                 print(f"Successful writing {register_name}")
                 log.setdefault(register_name, True)
             else:
@@ -71,5 +72,3 @@ def main(config):
 
     with open(config.LOG_FILE_NAME_WRITE, "w") as json_file:
         json.dump(log, json_file, indent=4)
-
-# TODO протестировать на железе!!!
