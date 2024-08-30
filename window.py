@@ -17,6 +17,8 @@ from PyQt6.QtWidgets import (
 from get_data_from_read_registers import get_read_registers
 import write_registers
 
+import config
+
 from config import configuration_tsh as config_tsh
 from config import configuration_2 as config_2
 from config import configuration_3 as config_3
@@ -25,6 +27,15 @@ from config import configuration_5 as config_5
 from config import configuration_6 as config_6
 from config import configuration_7 as config_7
 from config import configuration_7 as config_8
+
+config_list = [
+    'configuration_2',
+    'configuration_3',
+    'configuration_4',
+    'configuration_5',
+    'configuration_6',
+    'configuration_7',
+]
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -65,11 +76,11 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(read_button)
         read_button.clicked.connect(lambda: get_read_registers(self.table))
 
-        # TODO циклично запустить все тесты подряд
+        # TODO сделать чтобы после каждого цикла выводились данные которые записаны
         auto_test = QPushButton("Автотест")
         button_layout.addWidget(auto_test)
+        auto_test.clicked.connect(lambda: [write_registers.main(self.table, getattr(config, conf_name)) for conf_name in config_list])
 
-        # TODO продумать как изменять данные в конфиге пользователем!!!
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
         test_heat.clicked.connect(lambda: write_registers.main(self.table, config_2))
