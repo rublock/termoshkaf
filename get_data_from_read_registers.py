@@ -4,7 +4,7 @@ import sys
 from PyQt6.QtWidgets import QTableWidgetItem
 
 
-def read_registers_func(table):
+def get_read_registers(table):
     try:
         read_registers_stdout = subprocess.run(
             [sys.executable, 'read_registers.py'], capture_output=True, text=True, check=True

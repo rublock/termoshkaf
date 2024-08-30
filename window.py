@@ -14,16 +14,17 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 
-from get_data_from_read_registers import read_registers_func
+from get_data_from_read_registers import get_read_registers
 import write_registers
 
-from config import configuration_1 as config_1
+from config import configuration_tsh as config_tsh
 from config import configuration_2 as config_2
 from config import configuration_3 as config_3
 from config import configuration_4 as config_4
 from config import configuration_5 as config_5
 from config import configuration_6 as config_6
 from config import configuration_7 as config_7
+from config import configuration_7 as config_8
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -62,16 +63,44 @@ class MainWindow(QMainWindow):
         # кнопки в первой колонке
         read_button = QPushButton("Чтение")
         button_layout.addWidget(read_button)
-        read_button.clicked.connect(lambda: read_registers_func(self.table))
+        read_button.clicked.connect(lambda: get_read_registers(self.table))
+
+        # TODO циклично запустить все тесты подряд
+        auto_test = QPushButton("Автотест")
+        button_layout.addWidget(auto_test)
 
         # TODO продумать как изменять данные в конфиге пользователем!!!
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
-        test_heat.clicked.connect(lambda: write_registers.main(config_1))
+        test_heat.clicked.connect(lambda: write_registers.main(self.table, config_2))
 
         test_fan = QPushButton("Тест вентиляции")
         button_layout.addWidget(test_fan)
-        test_fan.clicked.connect(lambda:  write_registers.main(config_2))
+        test_fan.clicked.connect(lambda: write_registers.main(self.table, config_3))
+
+        test_humidity = QPushButton("Тест по влаге")
+        button_layout.addWidget(test_humidity)
+        test_humidity.clicked.connect(lambda: write_registers.main(self.table, config_4))
+
+        test_overheat = QPushButton("Тест перегрева")
+        button_layout.addWidget(test_overheat)
+        test_overheat.clicked.connect(lambda: write_registers.main(self.table, config_5))
+
+        test_overcool = QPushButton("Тест переохлаждения")
+        button_layout.addWidget(test_overcool)
+        test_overcool.clicked.connect(lambda: write_registers.main(self.table, config_6))
+
+        test_high_humidity = QPushButton("Тест защиты высокой влажности")
+        button_layout.addWidget(test_high_humidity)
+        test_high_humidity.clicked.connect(lambda: write_registers.main(self.table, config_7))
+
+        test_individual = QPushButton("Индивидуальный тест")
+        button_layout.addWidget(test_individual)
+        test_individual.clicked.connect(lambda: write_registers.main(self.table, config_8))
+
+        test_base = QPushButton("Возврат к исходными значениям")
+        button_layout.addWidget(test_base)
+        test_base.clicked.connect(lambda: write_registers.main(self.table, config_tsh))
 
         # поле ввода и кнопка отправки в третьей колонке
         input_widget = QWidget()
@@ -93,7 +122,7 @@ class MainWindow(QMainWindow):
 
         # # таймер для вызова функции считывания данных
         # self.timer = QTimer()
-        # self.timer.timeout.connect(lambda: read_registers_func(self.table))
+        # self.timer.timeout.connect(lambda: get_read_registers(self.table))
         # self.timer.start(1000)
 
     def handle_input(self, input_field):

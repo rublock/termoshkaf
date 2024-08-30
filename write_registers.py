@@ -2,6 +2,7 @@ import minimalmodbus
 import time
 import json
 
+from PyQt6.QtWidgets import QTableWidgetItem
 
 
 def my_modbus_worker(func, args, config):
@@ -24,7 +25,7 @@ def convert_to_unsigned(value):
         value = (1 << 16) + value
     return value
 
-def main(config):
+def main(table, config):
     """
     Пишем регистры термостата по адресу: THERMOSTAT_ADDR, используя COM порт: THERMOSTAT_PORT
     Все регистры доступные для записи заданы в REGISTER_MAP
@@ -52,6 +53,8 @@ def main(config):
                      },
                      config=config)
 
+    result_list = list()
+
     for register_name in config.DATA_MAP.keys():
         if register_name in config.REGISTER_MAP.get("HOLDING_REGISTERS").keys():
             if ret_val := my_modbus_worker(func=Thermostat.write_register,
@@ -62,7 +65,14 @@ def main(config):
                                                "functioncode": 6
                                            },
                                            config=config):
-                print(f"Successful writing {register_name}")
+                print(f"Successful writing {register_name} {config.DATA_MAP.get(register_name)}")
+
+                result_list.append(f'Удачно записано {register_name} {config.DATA_MAP.get(register_name)}')
+                result_list_wraped = "\n".join(result_list)
+                item = QTableWidgetItem(result_list_wraped)
+                table.setItem(0, 2, item)
+                table.resizeColumnsToContents()
+                table.resizeRowsToContents()
                 log.setdefault(register_name, True)
             else:
                 print(f"Error while writing {register_name}")
@@ -72,3 +82,5 @@ def main(config):
 
     with open(config.LOG_FILE_NAME_WRITE, "w") as json_file:
         json.dump(log, json_file, indent=4)
+
+    Thermostat.serial.close()
