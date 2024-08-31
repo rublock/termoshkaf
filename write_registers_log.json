@@ -1,22 +1,4 @@
 {
-    "TEMP_MAX_LEVEL": true,
-    "TEMP_MIN_LEVEL": true,
     "HUMID_MAX_LEVEL": true,
-    "HUMID_HYST": true,
-    "HUMID_ALARM_LEVEL": true,
-    "SENSOR_PRIO1": true,
-    "SENSOR_PRIO2": true,
-    "SENSOR_PRIO3": true,
-    "SENSOR_EXT": true,
-    "SENSORS_ENABLED": true,
-    "SEARCH_FOR_SENSORS": true,
-    "RELAY_MIN_SW_TIME": true,
-    "OTP_ENABLED": true,
-    "OTP_LEVEL": true,
-    "OTP_HYST": true,
-    "COLD_START_ENABLED": true,
-    "COLD_START_LEVEL": true,
-    "FAN_HYST": true,
-    "HEAT_HYST": true,
-    "MODBUS_ADDR": true
+    "HUMID_ALARM_LEVEL": true
 }
