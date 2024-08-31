@@ -3,7 +3,7 @@ from typing import List
 import minimalmodbus
 import time
 import json
-from config import configuration_1 as config
+from config import configuration_alloff as config
 
 
 def my_modbus_worker(func, args):

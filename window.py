@@ -18,22 +18,22 @@ import write_registers
 
 import config
 
-from config import configuration_1 as config_1
-from config import configuration_2 as config_2
-from config import configuration_3 as config_3
-from config import configuration_4 as config_4
-from config import configuration_5 as config_5
-from config import configuration_6 as config_6
-from config import configuration_7 as config_7
-from config import configuration_8 as config_8
+from config import configuration_alloff as config_alloff
+from config import configuration_heat as config_heat
+from config import configuration_fan as config_fan
+from config import configuration_heathym as config_heathym
+from config import configuration_overheat as config_overheat
+from config import configuration_overcool as config_overcool
+from config import configuration_overhym as config_overhym
+from config import configuration_individ as config_individ
 
 config_dict = {
-    'Тест нагрева': 'configuration_2',
-    'Тест вентиляции': 'configuration_3',
-    'Тест по влаге': 'configuration_4',
-    'Тест перегрева': 'configuration_5',
-    'Тест переохлаждения': 'configuration_6',
-    'Тест защиты высоской влажности': 'configuration_7',
+    'Тест нагрева': 'configuration_heat',
+    'Тест вентиляции': 'configuration_fan',
+    'Тест по влаге': 'configuration_heathym',
+    'Тест перегрева': 'configuration_overheat',
+    'Тест переохлаждения': 'configuration_overcool',
+    'Тест защиты высоской влажности': 'configuration_overhym',
 }
 
 
@@ -64,67 +64,64 @@ class MainWindow(QMainWindow):
         self.table.setItem(0, 2, QTableWidgetItem())
         self.table.setItem(0, 3, QTableWidgetItem())
 
-        # подготовка кнопок
+        # Подготовка кнопок
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
         button_widget.setLayout(button_layout)
         self.table.setCellWidget(0, 0, button_widget)
 
-        # кнопки в первой колонке
-        read_button = QPushButton("Чтение")
+        # Кнопки в первой колонке
+        read_button = QPushButton("Авточтение")
         button_layout.addWidget(read_button)
-        read_button.clicked.connect(lambda: get_read_registers(self.table))
+        read_button.clicked.connect(lambda: auto_read(self))
 
         test_start = QPushButton("Тест")
         button_layout.addWidget(test_start)
-        test_start.clicked.connect(lambda: write_registers.main(self.table, config_1))
+        test_start.clicked.connect(lambda: write_registers.main(self.table, config_alloff))
 
         auto_test = QPushButton("Автотест")
         button_layout.addWidget(auto_test)
-        auto_test.clicked.connect(lambda: self.show_test_completed_dialog(config))
+        auto_test.clicked.connect(lambda: self.show_auto_test_completed_dialog(config))
 
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
-        test_heat.clicked.connect(lambda: write_registers.main(self.table, config_2))
+        test_heat.clicked.connect(lambda: write_registers.main(self.table, config_heat))
 
         test_fan = QPushButton("Тест вентиляции")
         button_layout.addWidget(test_fan)
-        test_fan.clicked.connect(lambda: write_registers.main(self.table, config_3))
+        test_fan.clicked.connect(lambda: write_registers.main(self.table, config_fan))
 
         test_humidity = QPushButton("Тест по влаге")
         button_layout.addWidget(test_humidity)
-        test_humidity.clicked.connect(lambda: write_registers.main(self.table, config_4))
+        test_humidity.clicked.connect(lambda: write_registers.main(self.table, config_heathym))
 
         test_overheat = QPushButton("Тест перегрева")
         button_layout.addWidget(test_overheat)
-        test_overheat.clicked.connect(lambda: write_registers.main(self.table, config_5))
+        test_overheat.clicked.connect(lambda: write_registers.main(self.table, config_overheat))
 
         test_overcool = QPushButton("Тест переохлаждения")
         button_layout.addWidget(test_overcool)
-        test_overcool.clicked.connect(lambda: write_registers.main(self.table, config_6))
+        test_overcool.clicked.connect(lambda: write_registers.main(self.table, config_overcool))
 
         test_high_humidity = QPushButton("Тест защиты высокой влажности")
         button_layout.addWidget(test_high_humidity)
-        test_high_humidity.clicked.connect(lambda: write_registers.main(self.table, config_7))
+        test_high_humidity.clicked.connect(lambda: write_registers.main(self.table, config_overhym))
 
         test_individual = QPushButton("Индивидуальный тест")
         button_layout.addWidget(test_individual)
-        test_individual.clicked.connect(lambda: write_registers.main(self.table, config_8))
-
-        test_base = QPushButton("Возврат к исходными значениям")
-        button_layout.addWidget(test_base)
-        test_base.clicked.connect(lambda: write_registers.main(self.table, config_1))
+        test_individual.clicked.connect(lambda: write_registers.main(self.table, config_individ))
 
         # Подгоняем ячейку под размер контента
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
-        # таймер для вызова функции считывания данных
-        self.timer = QTimer()
-        self.timer.timeout.connect(lambda: get_read_registers(self.table))
-        self.timer.start(1000)
+        # Автоматическое считывание данных
+        def auto_read(self):
+            self.timer = QTimer()
+            self.timer.timeout.connect(lambda: get_read_registers(self.table))
+            self.timer.start(1000)
 
-    def show_test_completed_dialog(self, config):
+    def show_auto_test_completed_dialog(self, config):
 
         ask_msg_box = QMessageBox(self)
         ask_msg_box.setWindowTitle("Результат теста")
@@ -147,7 +144,7 @@ class MainWindow(QMainWindow):
             ask_msg_box.setText(f'{name} пройден?')
             result = ask_msg_box.exec()
             if result == QMessageBox.StandardButton.No:
-                write_registers.main(self.table, config_1)
+                write_registers.main(self.table, config_alloff)
                 break_msg_box.exec()
                 break
         else:
