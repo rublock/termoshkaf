@@ -37,6 +37,7 @@ def get_read_registers(table):
                     result_list.append(f'{key} {int_value}') # можно добавить текст к значениям
                     break
 
+        result_list.insert(7, '')
         result_list_wraped = "\n".join(result_list)
 
         item = QTableWidgetItem(result_list_wraped)

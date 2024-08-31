@@ -10,8 +10,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-    QHBoxLayout,
-    QLineEdit,
+    QMessageBox,
 )
 
 from get_data_from_read_registers import get_read_registers
@@ -19,23 +18,24 @@ import write_registers
 
 import config
 
-from config import configuration_tsh as config_tsh
+from config import configuration_1 as config_1
 from config import configuration_2 as config_2
 from config import configuration_3 as config_3
 from config import configuration_4 as config_4
 from config import configuration_5 as config_5
 from config import configuration_6 as config_6
 from config import configuration_7 as config_7
-from config import configuration_7 as config_8
+from config import configuration_8 as config_8
 
-config_list = [
-    'configuration_2',
-    'configuration_3',
-    'configuration_4',
-    'configuration_5',
-    'configuration_6',
-    'configuration_7',
-]
+config_dict = {
+    'Тест нагрева': 'configuration_2',
+    'Тест вентиляции': 'configuration_3',
+    'Тест по влаге': 'configuration_4',
+    'Тест перегрева': 'configuration_5',
+    'Тест переохлаждения': 'configuration_6',
+    'Тест защиты высоской влажности': 'configuration_7',
+}
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -50,15 +50,14 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(grid_layout)
 
         self.table = QTableWidget(self)
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(3)
         self.table.setRowCount(1)
         grid_layout.addWidget(self.table, 0, 0)
 
         self.table.setHorizontalHeaderLabels([
-            "",
-            "Cчитанные значения",
-            "Записанные установки",
-            "Значения для записи"
+            "                        ",
+            "            Cчитанные значения              ",
+            "            Записанные установки            ",
         ])
 
         self.table.setItem(0, 1, QTableWidgetItem())
@@ -76,10 +75,13 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(read_button)
         read_button.clicked.connect(lambda: get_read_registers(self.table))
 
-        # TODO сделать чтобы после каждого цикла выводились данные которые записаны
+        test_start = QPushButton("Тест")
+        button_layout.addWidget(test_start)
+        test_start.clicked.connect(lambda: write_registers.main(self.table, config_1))
+
         auto_test = QPushButton("Автотест")
         button_layout.addWidget(auto_test)
-        auto_test.clicked.connect(lambda: [write_registers.main(self.table, getattr(config, conf_name)) for conf_name in config_list])
+        auto_test.clicked.connect(lambda: self.show_test_completed_dialog(config))
 
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
@@ -111,37 +113,48 @@ class MainWindow(QMainWindow):
 
         test_base = QPushButton("Возврат к исходными значениям")
         button_layout.addWidget(test_base)
-        test_base.clicked.connect(lambda: write_registers.main(self.table, config_tsh))
-
-        # поле ввода и кнопка отправки в третьей колонке
-        input_widget = QWidget()
-        input_layout = QHBoxLayout(input_widget)
-        input_widget.setLayout(input_layout)
-
-        input_field = QLineEdit()
-        input_layout.addWidget(input_field)
-
-        send_button = QPushButton("Отправить")
-        input_layout.addWidget(send_button)
-
-        self.table.setCellWidget(0, 3, input_widget)
-        send_button.clicked.connect(lambda: self.handle_input(input_field))
+        test_base.clicked.connect(lambda: write_registers.main(self.table, config_1))
 
         # Подгоняем ячейку под размер контента
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
-        # # таймер для вызова функции считывания данных
-        # self.timer = QTimer()
-        # self.timer.timeout.connect(lambda: get_read_registers(self.table))
-        # self.timer.start(1000)
+        # таймер для вызова функции считывания данных
+        self.timer = QTimer()
+        self.timer.timeout.connect(lambda: get_read_registers(self.table))
+        self.timer.start(1000)
 
-    def handle_input(self, input_field):
-        input_text = input_field.text()
-        print(f"Введенные данные: {input_text}")
+    def show_test_completed_dialog(self, config):
 
-    # TODO сделать один конфигурационный файл и подменять в нем значения в зависимости от вида теста
-    # TODO забирать значения не из stdout, а сразу переменные из функции
+        ask_msg_box = QMessageBox(self)
+        ask_msg_box.setWindowTitle("Результат теста")
+        ask_msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+        break_msg_box = QMessageBox(self)
+        break_msg_box.setWindowTitle("Информация")
+        break_msg_box.setText("Возвращено к исходным занчениям.")
+        break_msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        completed_msg_box = QMessageBox(self)
+        completed_msg_box.setWindowTitle("Информация")
+        completed_msg_box.setText("Все тесты пройдены.")
+        completed_msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        cycle_completed = False
+
+        for name, conf_name in config_dict.items():
+            write_registers.main(self.table, getattr(config, conf_name))
+            ask_msg_box.setText(f'{name} пройден?')
+            result = ask_msg_box.exec()
+            if result == QMessageBox.StandardButton.No:
+                write_registers.main(self.table, config_1)
+                break_msg_box.exec()
+                break
+        else:
+            cycle_completed = True
+
+        if cycle_completed:
+            completed_msg_box.exec()
 
 
 if __name__ == "__main__":

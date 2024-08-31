@@ -47,6 +47,7 @@ REGISTER_MAP: typing.Final[dict] = {
             "HEAT_STATE": "0x10",  # Состояние реле нагревателя
             "FAN_STATE": "0x0F",  # Состояние реле вентилятора
             "ALARM_FLAG_HI": "0x18",  # Флаг аварии (HI)
+            "ALARM_FLAG_HI": "0x18",  # Флаг аварии (HI)
             "ALARM_FLAG_LOW": "0x19",  # Флаг аварии (LOW)
             "SERIAL_HI": "0x1E",  # Серийный номер устройства (HI)
             "SERIAL_LOW": "0x1F",  # Серийный номер устройства (LOW)
