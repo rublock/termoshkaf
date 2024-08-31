@@ -18,7 +18,7 @@ import write_registers
 
 import config
 
-from config import configuration_alloff as config_alloff
+from config import configuration_base as config_base
 from config import configuration_heat as config_heat
 from config import configuration_fan as config_fan
 from config import configuration_heathym as config_heathym
@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
 
         test_start = QPushButton("Тест")
         button_layout.addWidget(test_start)
-        test_start.clicked.connect(lambda: write_registers.main(self.table, config_alloff))
+        test_start.clicked.connect(lambda: write_registers.main(self.table, config_base))
 
         auto_test = QPushButton("Автотест")
         button_layout.addWidget(auto_test)
@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
             ask_msg_box.setText(f'{name} пройден?')
             result = ask_msg_box.exec()
             if result == QMessageBox.StandardButton.No:
-                write_registers.main(self.table, config_alloff)
+                write_registers.main(self.table, config_base)
                 break_msg_box.exec()
                 break
         else:
