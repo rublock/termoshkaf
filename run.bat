@@ -1,2 +1,9 @@
 @echo off
-start /B "MyApp" "C:\git\termoshkaf\venv\Scripts\pythonw.exe" "C:\git\termoshkaf\window.py"
+setlocal
+
+rem
+set "SCRIPT_DIR=%~dp0"
+
+start /B "MyApp" "%SCRIPT_DIR%venv\Scripts\pythonw.exe" "%SCRIPT_DIR%window.py"
+
+endlocal
