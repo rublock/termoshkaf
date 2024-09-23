@@ -10,13 +10,11 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-    QMessageBox,
 )
 
 from get_data_from_read_registers import get_read_registers
 import write_registers
-
-import config
+from modal_dialog import modal_dialog_func
 
 from config import configuration_base as config_base
 from config import configuration_heat as config_heat
@@ -27,13 +25,14 @@ from config import configuration_overcool as config_overcool
 from config import configuration_overhym as config_overhym
 from config import configuration_individ as config_individ
 
+
 config_dict = {
-    'Тест нагрева': 'configuration_heat',
-    'Тест вентиляции': 'configuration_fan',
-    'Тест по влаге': 'configuration_heathym',
-    'Тест перегрева': 'configuration_overheat',
-    'Тест переохлаждения': 'configuration_overcool',
-    'Тест защиты высоской влажности': 'configuration_overhym',
+    'Тест нагрева': ['Тест нагрева', 'configuration_heat'],
+    'Тест вентиляции': ['Тест вентиляции', 'configuration_fan'],
+    'Тест по влаге': ['Тест по влаге', 'configuration_heathym'],
+    'Тест перегрева': ['Тест перегрева', 'configuration_overheat'],
+    'Тест переохлаждения': ['Тест переохлаждения', 'configuration_overcool'],
+    'Тест защиты высокой влажности': ['Тест защиты высокой влажности', 'configuration_overhym'],
 }
 
 
@@ -56,9 +55,12 @@ class MainWindow(QMainWindow):
 
         self.table.setHorizontalHeaderLabels([
             "                        ",
-            "            Cчитанные значения              ",
-            "            Записанные установки            ",
+            "            Текущие показатели              ",
+            "            Текущие установки            ",
         ])
+
+        # Скрыть номера строк
+        self.table.verticalHeader().setVisible(False)
 
         self.table.setItem(0, 1, QTableWidgetItem())
         self.table.setItem(0, 2, QTableWidgetItem())
@@ -75,43 +77,46 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(read_button)
         read_button.clicked.connect(lambda: auto_read(self))
 
-        test_start = QPushButton("Тест")
+        test_start = QPushButton("Базовые настройки")
         button_layout.addWidget(test_start)
         test_start.clicked.connect(lambda: write_registers.main(self.table, config_base))
 
         auto_test = QPushButton("Автотест")
         button_layout.addWidget(auto_test)
-        auto_test.clicked.connect(lambda: self.show_auto_test_completed_dialog(config))
+        auto_test.clicked.connect(lambda: modal_dialog_func(self.table, config_dict))
 
         test_heat = QPushButton("Тест нагрева")
         button_layout.addWidget(test_heat)
-        test_heat.clicked.connect(lambda: write_registers.main(self.table, config_heat))
+        test_heat.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест нагрева']))
 
         test_fan = QPushButton("Тест вентиляции")
         button_layout.addWidget(test_fan)
-        test_fan.clicked.connect(lambda: write_registers.main(self.table, config_fan))
+        test_fan.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест вентиляции']))
 
         test_humidity = QPushButton("Тест по влаге")
         button_layout.addWidget(test_humidity)
-        test_humidity.clicked.connect(lambda: write_registers.main(self.table, config_heathym))
+        test_humidity.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест по влаге']))
 
         test_overheat = QPushButton("Тест перегрева")
         button_layout.addWidget(test_overheat)
-        test_overheat.clicked.connect(lambda: write_registers.main(self.table, config_overheat))
+        test_overheat.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест перегрева']))
 
         test_overcool = QPushButton("Тест переохлаждения")
         button_layout.addWidget(test_overcool)
-        test_overcool.clicked.connect(lambda: write_registers.main(self.table, config_overcool))
+        test_overcool.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест переохлаждения']))
 
         test_high_humidity = QPushButton("Тест защиты высокой влажности")
         button_layout.addWidget(test_high_humidity)
-        test_high_humidity.clicked.connect(lambda: write_registers.main(self.table, config_overhym))
+        test_high_humidity.clicked.connect(lambda: modal_dialog_func(self.table, config_dict['Тест защиты высокой влажности']))
 
         test_individual = QPushButton("Индивидуальный тест")
         button_layout.addWidget(test_individual)
         test_individual.clicked.connect(lambda: write_registers.main(self.table, config_individ))
 
-        # Подгоняем ячейку под размер контента
+        # Устанавливаем таблицу как центральный виджет
+        self.setCentralWidget(self.table)
+
+        # Настраиваем размеры строк и столбцов в соответствии с содержимым
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
 
@@ -119,39 +124,7 @@ class MainWindow(QMainWindow):
         def auto_read(self):
             self.timer = QTimer()
             self.timer.timeout.connect(lambda: get_read_registers(self.table))
-            self.timer.start(1000)
-
-    def show_auto_test_completed_dialog(self, config):
-
-        ask_msg_box = QMessageBox(self)
-        ask_msg_box.setWindowTitle("Результат теста")
-        ask_msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-
-        break_msg_box = QMessageBox(self)
-        break_msg_box.setWindowTitle("Информация")
-        break_msg_box.setText("Возвращено к исходным занчениям.")
-        break_msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-
-        completed_msg_box = QMessageBox(self)
-        completed_msg_box.setWindowTitle("Информация")
-        completed_msg_box.setText("Все тесты пройдены.")
-        completed_msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-
-        cycle_completed = False
-
-        for name, conf_name in config_dict.items():
-            write_registers.main(self.table, getattr(config, conf_name))
-            ask_msg_box.setText(f'{name} пройден?')
-            result = ask_msg_box.exec()
-            if result == QMessageBox.StandardButton.No:
-                write_registers.main(self.table, config_base)
-                break_msg_box.exec()
-                break
-        else:
-            cycle_completed = True
-
-        if cycle_completed:
-            completed_msg_box.exec()
+            self.timer.start(5000)
 
 
 if __name__ == "__main__":

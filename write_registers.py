@@ -53,7 +53,7 @@ def main(table, config):
                      },
                      config=config)
 
-    result_list = list()
+    result_list = []
 
     for register_name in config.DATA_MAP.keys():
         if register_name in config.REGISTER_MAP.get("HOLDING_REGISTERS").keys():
@@ -61,13 +61,13 @@ def main(table, config):
                                            args={
                                                "registeraddress": int(
                                                    config.REGISTER_MAP.get("HOLDING_REGISTERS").get(register_name), 16),
-                                               "value": convert_to_unsigned(config.DATA_MAP.get(register_name)),
+                                               "value": convert_to_unsigned(config.DATA_MAP.get(register_name)[0]),
                                                "functioncode": 6
                                            },
                                            config=config):
-                print(f"Successful writing {register_name} {config.DATA_MAP.get(register_name)}")
+                print(f"Successful writing {register_name} {config.DATA_MAP.get(register_name)[0]}")
 
-                result_list.append(f'Удачно записано {register_name} {config.DATA_MAP.get(register_name)}')
+                result_list.append(f'{config.DATA_MAP.get(register_name)[1]} {config.DATA_MAP.get(register_name)[0] / 10}')
                 result_list_wraped = "\n".join(result_list)
                 item = QTableWidgetItem(result_list_wraped)
                 table.setItem(0, 2, item)
