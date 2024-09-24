@@ -33,9 +33,9 @@ def modal_dialog_func(table, config_name):
         write_registers.main(table, config_base)
 
     elif isinstance(config_name, dict):
-        for k, v in config_name.items():
-            write_registers.main(table, getattr(config, v[1]))
-            ask_msg_box.setText(f'{k} пройден?')
+        for key, value in config_name.items():
+            write_registers.main(table, getattr(config, value[1]))
+            ask_msg_box.setText(f'{key} пройден?')
             result = ask_msg_box.exec()
             if result == QMessageBox.StandardButton.No:
                 write_registers.main(table, config_base)
