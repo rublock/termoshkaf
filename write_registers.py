@@ -67,12 +67,14 @@ def main(table, config):
                                            config=config):
                 print(f"Successful writing {register_name} {config.DATA_MAP.get(register_name)[0]}")
 
+                # подготовка данных для вывода в интерфейс
                 result_list.append(f'{config.DATA_MAP.get(register_name)[1]} {config.DATA_MAP.get(register_name)[0] / 10}')
                 result_list_wraped = "\n".join(result_list)
                 item = QTableWidgetItem(result_list_wraped)
                 table.setItem(0, 2, item)
                 table.resizeColumnsToContents()
                 table.resizeRowsToContents()
+                                               
                 log.setdefault(register_name, True)
             else:
                 print(f"Error while writing {register_name}")
