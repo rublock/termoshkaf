@@ -8,7 +8,7 @@ from config import configuration_base as config_base
 
 def modal_dialog_func(table, config_name):
     """
-    Модальные кокна после окончания теста
+    Модальные окна после окончания теста
     """
     ask_msg_box = QMessageBox()
     ask_msg_box.setWindowTitle("Результат теста")
